@@ -19,8 +19,6 @@ export OUTPUT_CONSOLE="1"
 # Network Interface: enx001e06323348, wlan0, ....
 export NETIF=eth0
 
-IFS=$'\n' SATA=(`mount | grep "/dev/sd" | awk '{ print $1 }'`)
-
 # Screen refresh in seconds
 export REFRESH="1"
 
@@ -59,7 +57,7 @@ get_net_tx_rx_realtime() {
 }
 
 get_disk_mount_info() {
-	# SATA HDD mount
+	IFS=$'\n' SATA=(`mount | grep "/dev/sd" | awk '{ print $1 }'`)
 	export mountedNum=`mount | grep "/dev/sd" | awk '{ print $1 }' | wc -l`
 	if [ $mountedNum -ge 2 ]
 	then
