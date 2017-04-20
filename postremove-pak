@@ -1,0 +1,6 @@
+#!/bin/sh
+
+systemctl stop cloudshell-lcd.service
+systemctl disable cloudshell-lcd.service
+rm -f /bin/cloudshell-lcd
+
