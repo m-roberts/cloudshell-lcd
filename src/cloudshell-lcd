@@ -1,0 +1,147 @@
+#!/bin/bash
+###########################################################
+# CloudShell LCD Display Script                           #
+#                                                         #
+# Initial Script: Seungchul Lee - john.lee@hardkernel.com #
+# Modifications by Steve (uncredited?)                    #
+#   * Display disk usage of /dev/md? devices              #
+#   * Display RAID status                                 #
+# Modifications by Mike Roberts - mgroberts.91@gmail.com  #
+#   * Modularised implementation                          #
+#   * Added easy configuration                            #
+###########################################################
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SYS_INSTALL_DIR="/usr/lib/cloudshell-lcd"
+
+if [[ -f "$DIR/config" ]]; then
+  source "$DIR/config"
+else
+  source "$SYS_INSTALL_DIR/config"
+fi
+
+if [[ -f "$DIR/functions" ]]; then
+  source "$DIR/functions"
+else
+  source "$SYS_INSTALL_DIR/functions"
+fi
+
+
+###################
+# Local Variables #
+###################
+export ext_ip_refresh_counter=0
+
+COFF=$(tput sgr0)
+CBRED=$(tput setab 1)
+CBBLACK=$(tput setab 0)
+CBLACK=$(tput setaf 0)
+CGREEN=$(tput setaf 2)
+CRED=$(tput setaf 1)
+CBLUE=$(tput setaf 6)
+CWHITE=$(tput setaf 7)
+
+
+initial_setup
+
+##################
+# Main Print-Out #
+##################
+print_hostname() {
+  echo -e "$CBLUE$HOSTNAME $COFF: $DATE"
+}
+
+print_os() {
+  echo -e "$OS_DISTRIBUTOR $CGREEN$UBUNTU_VERSION$COFF       Kernel $CGREEN$KERNEL_VERSION$COFF"
+}
+
+print_cpu() {
+  echo -e "CPU Usage: $CBLUE$CPU_USAGE%$COFF  CPU Temp: $CRED$CPU_TEMP$COFF"
+  echo -e "A15 : $CBLUE$SPEED_CPU_A15 MHz$COFF   A7 : $CBLUE$SPEED_CPU_A7 MHz$COFF"
+}
+
+print_mem() {
+  echo -e "Memory Free: $CBLUE$MEM_AVAILABLE MB$COFF   Used: $CBLUE$MEM_USED MB$COFF"
+}
+
+print_ip() {
+  #echo -e "IP: $CBLUE$INTERNAL_IP$COFF Ext IP: $CBLUE$EXTERNAL_IP$COFF"
+  echo -e "IP: $CBLUE$INTERNAL_IP$COFF @ $CBLUE$SPEED_ETH0 Mbps$COFF"
+}
+
+print_tx_rx() {
+  echo -e "TX: $CBLUE$NET_TX MB/s$COFF RX: $CBLUE$NET_RX MB/s$COFF"
+}
+
+print_disks() {
+  for i in "${!SATA[@]}"; do
+    echo ""
+    echo -e "${SATA[$i]} ${DISK_TEMP[$i]}$COFF"
+    echo -e "R/W $CBLUE${DISK_R[$i]}$COFF / $CBLUE${DISK_W[$i]}$COFF MB/s"
+    echo -ne "Disk Used: $CBLUE${DISK_USED[$i]}$COFF ($CBLUE${DISK_USED_PCT[$i]}$COFF)  Free: $CBLUE${DISK_FREE[$i]}$COFF"
+  done
+}
+
+print_samba() {
+  echo -e "Samba Clients: $CBLUE$SAMBA_CONNECTIONS$COFF"
+}
+
+print_nfs() {
+  echo -e "NFS Connections: $CBLUE$NFS_CONNECTIONS$COFF"
+}
+
+print_raid() {
+  if [ -f /var/log/RAID_STATUS4LCD ]; then
+    RAID_STATUS4LCD=$(cat /var/log/RAID_STATUS4LCD)
+    echo ""
+    echo ""
+    if [ "$RAID_STATUS4LCD" = "Normal" ]; then 
+      echo "Raid Status:${CGREEN}"
+      figlet "$RAID_STATUS4LCD"
+      echo "${COFF}"
+    elif [ "$RAID_STATUS4LCD" = "Rebuilding" ]; then
+      echo "Raid Status:${CBLUE}"
+      figlet "$RAID_STATUS4LCD"
+      echo "${COFF}"
+    else
+      if [[ $RAID_ERROR_PRINTOUT_STYLE -eq 1 ]]; then
+        echo "Raid Status:${CBRED}"
+        figlet "$RAID_STATUS4LCD"
+        echo "${COFF}"
+      elif [[ $RAID_ERROR_PRINTOUT_STYLE -eq 2 ]]; then
+        printf "Raid Status:\n${CBRED}!!!!!!!!!!!!!!!!!!!!\n!!${COFF}%*s%*s${CBRED}!!\n!!!!!!!!!!!!!!!!!!!!${COFF}% 20s ${COFF} \r\n${COFF} " $(((${#RAID_STATUS4LCD}+16)/2)) $RAID_STATUS4LCD $(((17-${#RAID_STATUS4LCD})/2))
+      fi
+    fi
+  fi
+}
+
+print_all_status() {
+  print_hostname
+  print_os
+  print_cpu
+  #print_mem
+  print_ip
+  # print_tx_rx
+  print_disks
+  # print_samba
+  # print_nfs
+  print_raid
+}
+
+#################
+# Infinite Loop #
+#################
+main() {
+  while true; do 
+    get_all_data
+    
+    update_tty_view
+    clear
+    print_all_status
+    
+    sleep "$REFRESH"
+
+  done  
+}
+
+main

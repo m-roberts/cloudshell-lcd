@@ -1,0 +1,13 @@
+Source: cloudshell-lcd
+Section: utils
+Priority: optional
+Maintainer: Mike Roberts <mgroberts.91@gmail.com>
+Build-Depends: debhelper (>= 7), dh-systemd (>= 1.5)
+Standards-Version: 3.8.4
+Homepage: https://github.com/m-roberts/cloudshell-lcd
+
+Package: cloudshell-lcd
+Architecture: armhf
+Depends: curl, sysstat, figlet
+Description: ODROID-XU4 Cloudshell Server LCD Informations
+ This package contains the cloudshell-lcd executable.

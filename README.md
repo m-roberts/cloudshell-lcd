@@ -1,9 +1,10 @@
 # cloudshell-lcd
 ODROID-XU4 Cloudshell Server LCD Informations
 
-Installation:
+## Installation
+```
+wget https://github.com/m-roberts/cloudshell-lcd/blob/master/cloudshell-lcd.deb
+sudo dpkg -i cloudshell-lcd.deb
+```
 
-sudo dpkg -i cloudshell-lcd_20170420-4_armhf.deb
-
-sudo apt-get -f install
-
+## How this script works
