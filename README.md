@@ -1,13 +1,7 @@
 # cloudshell-lcd
 ODROID-XU4 Cloudshell Server LCD Informations
 
-## Installation
-```
-wget https://github.com/m-roberts/cloudshell-lcd/blob/master/cloudshell-lcd.deb
-sudo dpkg -i cloudshell-lcd.deb
-```
-
-## How this script works
+## How this software works
 ### Files
 #### cloudshell-lcd
 The master script for pre-configuring the system for and printing to the LCD screen.
@@ -16,12 +10,13 @@ Control parameters.
 ##### helper/functions
 Abstracting functionality away from the main script to improve legibility.
 #### raid/checkRAID.bash
-This runs every 5 minutes to check the state of the RAID setup, and updates a file accordingly. `cloudshell-lcd` checks this file on each refresh
+A nice wrapper around the output of `raidmgr_static` to produce a useful output to `cloudshell-lcd`. This runs every 5 minutes to check the state of the RAID setup, and updates `/var/log/RAID_STATUS4LCD` with text representing what to display in `cloudshell-lcd`, which checks this file and renders the text to the display on each refresh.
 #### raid/raidmgr_static (JMS56X HW RAID Manager V8.0.0.1)
-Not really sure right now...
+This is the low-level diagnostics tool used by `checkRAID.bash` to assess the actual state of the drives.
 
 
 ## To Do
+* Pass all Shellchecker tests
 * Debug inevitable bugs from `danger coding` the hell out of this implementation
 * Add systemd service to run checkRAID.bash every 5 minutes; replace cron
 
