@@ -1,1 +1,5 @@
-src/cloudshell-lcd /usr/bin
+src/cloudshell-lcd          /bin
+src/helper/config           /usr/lib/cloudshell-lcd
+src/helper/functions        /usr/lib/cloudshell-lcd
+src/raid/checkRAID.bash     /bin
+src/raid/raidmgr_static     /usr/bin

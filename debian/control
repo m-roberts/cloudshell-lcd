@@ -8,6 +8,6 @@ Homepage: https://github.com/m-roberts/cloudshell-lcd
 
 Package: cloudshell-lcd
 Architecture: armhf
-Depends: curl, sysstat, figlet
+Depends: curl, figlet, gettext, mailutils, smartmontools, sysstat
 Description: ODROID-XU4 Cloudshell Server LCD Informations
  This package contains the cloudshell-lcd executable.

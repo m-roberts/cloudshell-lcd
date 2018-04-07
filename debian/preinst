@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Ensure that max inotify watches is high enough
+cp /etc/sysctl.conf /etc/sysctl.conf.cloudshell-lcd.old
+sed -i '/fs.inotify.max_user_watches/s/^/#/g' /etc/sysctl.conf
+echo "fs.inotify.max_user_watches=1048576" >> /etc/sysctl.conf
+echo 1048576 > /proc/sys/fs/inotify/max_user_watches
+
+# Prevent "postdrop: warning: unable to look up public/pickup: No such file or directory":
+if [ ! -f /var/spool/postfix/public/pickup ]; then
+    mkdir -p /var/spool/postfix/public
+    mkfifo /var/spool/postfix/public/pickup
+fi

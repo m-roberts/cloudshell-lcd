@@ -140,7 +140,6 @@ main() {
     print_all_status
     
     sleep "$REFRESH"
-
   done  
 }
 

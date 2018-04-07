@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ -f /usr/share/postfix/main.cf.debian ] && [ ! -f /etc/postfix/main.cf ]; then
+    cp /usr/share/postfix/main.cf.debian /etc/postfix/main.cf
+fi
