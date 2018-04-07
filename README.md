@@ -12,7 +12,7 @@ Abstracting functionality away from the main script to improve legibility.
 #### raid/checkRAID.bash
 A nice wrapper around the output of `raidmgr_static` to produce a useful output to `cloudshell-lcd`. This runs every 5 minutes to check the state of the RAID setup, and updates `/var/log/RAID_STATUS4LCD` with text representing what to display in `cloudshell-lcd`, which checks this file and renders the text to the display on each refresh.
 #### raid/raidmgr_static (JMS56X HW RAID Manager V8.0.0.1)
-This is the low-level diagnostics tool used by `checkRAID.bash` to assess the actual state of the drives.
+The JMS56X RAID Manager Console is used by `checkRAID.bash` to monitor the status of the disks connected on JMS56X hardware RAID controller.
 
 
 ## To Do
